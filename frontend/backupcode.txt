@@ -1,0 +1,1520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfolio Constellation Chat</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: radial-gradient(ellipse at center, #0f0f23 0%, #1a1a2e 30%, #16213e 70%, #0f3460 100%);
+            min-height: 100vh;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Enhanced Animated Background */
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .star {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle 4s infinite;
+        }
+
+        .star.small {
+            width: 1px;
+            height: 1px;
+        }
+
+        .star.medium {
+            width: 2px;
+            height: 2px;
+            box-shadow: 0 0 6px rgba(255,255,255,0.8);
+        }
+
+        .star.large {
+            width: 3px;
+            height: 3px;
+            box-shadow: 0 0 10px rgba(255,255,255,0.9);
+        }
+
+        /* Connection Lines */
+        .connection-line {
+            position: absolute;
+            height: 2px;
+            background: linear-gradient(90deg, 
+                rgba(102, 126, 234, 0.8) 0%, 
+                rgba(118, 75, 162, 0.6) 50%, 
+                rgba(102, 126, 234, 0.8) 100%);
+            border-radius: 1px;
+            z-index: 45;
+            animation: line-glow 3s infinite;
+            box-shadow: 0 0 10px rgba(102, 126, 234, 0.5);
+        }
+
+        @keyframes line-glow {
+            0%, 100% { 
+                opacity: 0.6;
+                box-shadow: 0 0 10px rgba(102, 126, 234, 0.5);
+            }
+            50% { 
+                opacity: 1;
+                box-shadow: 0 0 20px rgba(102, 126, 234, 0.8);
+            }
+        }
+
+        /* Special Interactive Star for Prompts */
+        .prompt-star {
+            position: absolute;
+            top: 20%;
+            right: 15%;
+            width: 20px;
+            height: 20px;
+            background: linear-gradient(45deg, #667eea, #764ba2, #f093fb);
+            border-radius: 50%;
+            cursor: pointer;
+            pointer-events: all;
+            z-index: 100;
+            animation: prompt-star-pulse 3s infinite;
+            box-shadow: 
+                0 0 20px rgba(102, 126, 234, 0.8),
+                0 0 40px rgba(118, 75, 162, 0.6),
+                0 0 60px rgba(240, 147, 251, 0.4);
+            transition: all 0.3s ease;
+        }
+
+        .prompt-star::before {
+            content: '✨';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 12px;
+            animation: rotate 8s linear infinite;
+        }
+
+        .prompt-star:hover {
+            transform: scale(1.3);
+            box-shadow: 
+                0 0 30px rgba(102, 126, 234, 1),
+                0 0 60px rgba(118, 75, 162, 0.8),
+                0 0 90px rgba(240, 147, 251, 0.6);
+        }
+
+        @keyframes prompt-star-pulse {
+            0%, 100% { 
+                transform: scale(1);
+                opacity: 0.8;
+            }
+            50% { 
+                transform: scale(1.1);
+                opacity: 1;
+            }
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.2); }
+        }
+
+        @keyframes rotate {
+            from { transform: translate(-50%, -50%) rotate(0deg); }
+            to { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+
+        /* Floating Particles */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            border-radius: 50%;
+            animation: float 15s infinite linear;
+            opacity: 0.6;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.6;
+            }
+            90% {
+                opacity: 0.6;
+            }
+            100% {
+                transform: translateY(-100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        /* Main Container */
+        .constellation-container {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+            z-index: 10;
+        }
+
+        /* Enhanced Central Hub */
+        .central-hub {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 280px;
+            height: 280px;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.15), rgba(118, 75, 162, 0.15));
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            backdrop-filter: blur(20px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 
+                0 0 60px rgba(102, 126, 234, 0.4),
+                inset 0 0 60px rgba(255,255,255,0.1);
+            animation: pulse-glow 6s infinite;
+            z-index: 5;
+        }
+
+        @keyframes pulse-glow {
+            0%, 100% { 
+                box-shadow: 
+                    0 0 60px rgba(102, 126, 234, 0.4),
+                    inset 0 0 60px rgba(255,255,255,0.1);
+                transform: translate(-50%, -50%) scale(1);
+            }
+            50% { 
+                box-shadow: 
+                    0 0 100px rgba(102, 126, 234, 0.6),
+                    inset 0 0 80px rgba(255,255,255,0.15);
+                transform: translate(-50%, -50%) scale(1.02);
+            }
+        }
+
+        .hub-avatar {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            color: white;
+            margin-bottom: 15px;
+            animation: rotate-hub 25s linear infinite;
+            box-shadow: 0 0 30px rgba(102, 126, 234, 0.5);
+        }
+
+        @keyframes rotate-hub {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .hub-title {
+            color: white;
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 6px;
+            text-align: center;
+            text-shadow: 0 0 20px rgba(255,255,255,0.5);
+        }
+
+        .hub-subtitle {
+            color: rgba(255,255,255,0.8);
+            font-size: 0.8rem;
+            text-align: center;
+            margin-bottom: 15px;
+            font-weight: 300;
+        }
+
+        /* Enhanced Message Cards */
+        .message-card {
+            position: absolute;
+            max-width: 280px;
+            min-width: 200px;
+            padding: 20px;
+            border-radius: 20px;
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255,255,255,0.2);
+            box-shadow: 
+                0 15px 35px rgba(0,0,0,0.2),
+                0 0 0 1px rgba(255,255,255,0.1);
+            animation: float-in 1s ease-out;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 50;
+        }
+
+        .message-card:hover {
+            transform: scale(1.05) translateY(-3px);
+            z-index: 200;
+            box-shadow: 
+                0 25px 50px rgba(0,0,0,0.3),
+                0 0 0 1px rgba(255,255,255,0.2);
+        }
+
+        .user-card {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.9), rgba(118, 75, 162, 0.9));
+            color: white;
+            border-left: 4px solid rgba(255,255,255,0.5);
+        }
+
+        .bot-card {
+            background: linear-gradient(135deg, rgba(255,255,255,0.18), rgba(255,255,255,0.12));
+            color: white;
+            border-left: 4px solid #667eea;
+        }
+
+        /* Connected cards glow effect */
+        .message-card.connected {
+            box-shadow: 
+                0 15px 35px rgba(0,0,0,0.2),
+                0 0 0 1px rgba(255,255,255,0.1),
+                0 0 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .message-card.connected:hover {
+            box-shadow: 
+                0 25px 50px rgba(0,0,0,0.3),
+                0 0 0 1px rgba(255,255,255,0.2),
+                0 0 30px rgba(102, 126, 234, 0.6);
+        }
+
+        @keyframes float-in {
+            from {
+                opacity: 0;
+                transform: scale(0.3) translateY(100px) rotate(10deg);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0) rotate(0deg);
+            }
+        }
+
+        .message-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .message-avatar {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .user-avatar {
+            background: linear-gradient(135deg, rgba(255,255,255,0.3), rgba(255,255,255,0.2));
+        }
+
+        .bot-avatar {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+        }
+
+        .message-text {
+            font-size: 0.9rem;
+            line-height: 1.5;
+            margin-bottom: 10px;
+            font-weight: 400;
+        }
+
+        .message-time {
+            font-size: 0.75rem;
+            opacity: 0.7;
+            text-align: right;
+            font-weight: 300;
+        }
+
+        /* Enhanced Image Cards */
+        .image-card {
+            position: absolute;
+            max-width: 320px;
+            background: linear-gradient(135deg, rgba(255,255,255,0.15), rgba(255,255,255,0.1));
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 20px;
+            padding: 15px;
+            animation: float-in 1s ease-out;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 
+                0 15px 35px rgba(0,0,0,0.2),
+                0 0 0 1px rgba(255,255,255,0.1);
+            z-index: 50;
+        }
+
+        .image-card:hover {
+            transform: scale(1.05) translateY(-5px);
+            z-index: 200;
+        }
+
+        .constellation-image {
+            width: 100%;
+            height: auto;
+            max-height: 200px;
+            object-fit: cover;
+            border-radius: 15px;
+            margin-bottom: 12px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+        }
+
+        /* Suggestions Panel */
+        .suggestions-panel {
+            position: absolute;
+            top: 15%;
+            right: 5%;
+            width: 350px;
+            max-width: 90vw;
+            background: linear-gradient(135deg, rgba(255,255,255,0.15), rgba(255,255,255,0.1));
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 25px;
+            padding: 25px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+            z-index: 150;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-20px) scale(0.9);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .suggestions-panel.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0) scale(1);
+        }
+
+        .suggestions-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: white;
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            text-shadow: 0 0 10px rgba(255,255,255,0.3);
+        }
+
+        .suggestions-grid {
+            display: grid;
+            gap: 12px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .suggestion-card {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.2), rgba(118, 75, 162, 0.2));
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 15px;
+            padding: 15px;
+            color: white;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: left;
+            border: none;
+            width: 100%;
+        }
+
+        .suggestion-card:hover {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.4), rgba(118, 75, 162, 0.4));
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        /* Enhanced Typing Indicator */
+        .typing-constellation {
+            position: absolute;
+            left: 50%;
+            top: 60%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, rgba(255,255,255,0.15), rgba(255,255,255,0.1));
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 25px;
+            padding: 20px;
+            display: none;
+            align-items: center;
+            gap: 15px;
+            animation: float-in 0.6s ease-out;
+            box-shadow: 
+                0 15px 35px rgba(0,0,0,0.2),
+                0 0 0 1px rgba(255,255,255,0.1);
+            z-index: 60;
+        }
+
+        .typing-dots {
+            display: flex;
+            gap: 8px;
+        }
+
+        .typing-dot {
+            width: 8px;
+            height: 8px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 50%;
+            animation: typing-bounce 1.6s infinite ease-in-out;
+            box-shadow: 0 0 10px rgba(102, 126, 234, 0.5);
+        }
+
+        .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+        .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes typing-bounce {
+            0%, 60%, 100% { transform: translateY(0) scale(1); }
+            30% { transform: translateY(-12px) scale(1.2); }
+        }
+
+        /* Enhanced Status and Controls */
+        .status-indicator {
+            position: absolute;
+            top: 30px;
+            right: 30px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: linear-gradient(135deg, rgba(255,255,255,0.15), rgba(255,255,255,0.1));
+            backdrop-filter: blur(15px);
+            padding: 12px 25px;
+            border-radius: 30px;
+            border: 1px solid rgba(255,255,255,0.2);
+            color: white;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+            z-index: 100;
+        }
+
+        .status-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #2ecc71;
+            animation: pulse-dot 2.5s infinite;
+            box-shadow: 0 0 15px rgba(46, 204, 113, 0.6);
+        }
+
+        @keyframes pulse-dot {
+            0% { box-shadow: 0 0 0 0 rgba(46, 204, 113, 0.7); }
+            70% { box-shadow: 0 0 0 15px rgba(46, 204, 113, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(46, 204, 113, 0); }
+        }
+
+        .status-dot.offline {
+            background: #e74c3c;
+            box-shadow: 0 0 15px rgba(231, 76, 60, 0.6);
+            animation: pulse-dot-red 2.5s infinite;
+        }
+
+        @keyframes pulse-dot-red {
+            0% { box-shadow: 0 0 0 0 rgba(231, 76, 60, 0.7); }
+            70% { box-shadow: 0 0 0 15px rgba(231, 76, 60, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(231, 76, 60, 0); }
+        }
+
+        .clear-chat {
+            position: absolute;
+            top: 30px;
+            left: 30px;
+            background: linear-gradient(135deg, rgba(255,255,255,0.15), rgba(255,255,255,0.1));
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255,255,255,0.2);
+            color: white;
+            padding: 12px 25px;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .clear-chat:hover {
+            background: linear-gradient(135deg, rgba(255,255,255,0.25), rgba(255,255,255,0.15));
+            transform: scale(1.05);
+            box-shadow: 0 12px 35px rgba(0,0,0,0.3);
+        }
+
+        /* Enhanced Input Area */
+        .input-constellation {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 90%;
+            max-width: 550px;
+            background: linear-gradient(135deg, rgba(255,255,255,0.15), rgba(255,255,255,0.1));
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.3);
+            border-radius: 60px;
+            padding: 12px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            box-shadow: 
+                0 15px 35px rgba(0,0,0,0.3),
+                0 0 0 1px rgba(255,255,255,0.1);
+            z-index: 100;
+        }
+
+        .message-input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            outline: none;
+            color: white;
+            font-size: 1.05rem;
+            padding: 18px 25px;
+            border-radius: 30px;
+            font-weight: 300;
+        }
+
+        .message-input::placeholder {
+            color: rgba(255,255,255,0.6);
+            font-weight: 300;
+        }
+
+        .send-constellation {
+            width: 55px;
+            height: 55px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border: none;
+            border-radius: 50%;
+            color: white;
+            font-size: 1.3rem;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .send-constellation:hover {
+            transform: scale(1.15);
+            box-shadow: 0 12px 35px rgba(102, 126, 234, 0.6);
+        }
+
+        .send-constellation:active {
+            transform: scale(1.05);
+        }
+
+        /* Hint Text for Star */
+        .star-hint {
+            position: absolute;
+            top: 12%;
+            right: 20%;
+            color: rgba(255,255,255,0.7);
+            font-size: 0.85rem;
+            background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05));
+            backdrop-filter: blur(10px);
+            padding: 8px 15px;
+            border-radius: 20px;
+            border: 1px solid rgba(255,255,255,0.2);
+            animation: hint-fade 4s infinite;
+            pointer-events: none;
+            z-index: 99;
+        }
+
+        @keyframes hint-fade {
+            0%, 70%, 100% { opacity: 0; }
+            10%, 60% { opacity: 1; }
+        }
+
+        /* Mobile Responsiveness */
+        @media (max-width: 768px) {
+            .central-hub {
+                width: 240px;
+                height: 240px;
+            }
+
+            .hub-avatar {
+                width: 60px;
+                height: 60px;
+                font-size: 1.5rem;
+            }
+
+            .hub-title {
+                font-size: 1rem;
+            }
+
+            .hub-subtitle {
+                font-size: 0.75rem;
+            }
+
+            .message-card {
+                max-width: 240px;
+                min-width: 180px;
+                padding: 18px;
+            }
+
+            .input-constellation {
+                width: 95%;
+                padding: 10px;
+                bottom: 20px;
+            }
+
+            .message-input {
+                padding: 15px 20px;
+                font-size: 1rem;
+            }
+
+            .send-constellation {
+                width: 50px;
+                height: 50px;
+                font-size: 1.1rem;
+            }
+
+            .prompt-star {
+                top: 15%;
+                right: 10%;
+                width: 25px;
+                height: 25px;
+            }
+
+            .prompt-star::before {
+                font-size: 14px;
+            }
+
+            .suggestions-panel {
+                top: 20%;
+                right: 5%;
+                left: 5%;
+                width: auto;
+                max-width: none;
+                padding: 20px;
+            }
+
+            .suggestions-grid {
+                max-height: 300px;
+            }
+
+            .star-hint {
+                top: 8%;
+                right: 15%;
+                font-size: 0.75rem;
+                padding: 6px 12px;
+            }
+
+            .status-indicator {
+                top: 20px;
+                right: 20px;
+                padding: 10px 20px;
+                font-size: 0.9rem;
+            }
+
+            .clear-chat {
+                top: 20px;
+                left: 20px;
+                padding: 10px 20px;
+                font-size: 0.9rem;
+            }
+
+            .suggestion-card {
+                padding: 18px;
+                font-size: 0.95rem;
+                min-height: 50px;
+                display: flex;
+                align-items: center;
+            }
+
+            .image-card {
+                max-width: 280px;
+                padding: 12px;
+            }
+
+            .constellation-image {
+                max-height: 150px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .central-hub {
+                width: 200px;
+                height: 200px;
+            }
+
+            .hub-avatar {
+                width: 50px;
+                height: 50px;
+                font-size: 1.3rem;
+            }
+
+            .message-card {
+                max-width: 200px;
+                min-width: 160px;
+                padding: 15px;
+            }
+
+            .suggestions-panel {
+                padding: 15px;
+            }
+
+            .suggestion-card {
+                padding: 15px;
+                font-size: 0.9rem;
+            }
+
+            .image-card {
+                max-width: 220px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Enhanced Animated Background -->
+    <div class="stars" id="stars"></div>
+    <div class="particles" id="particles"></div>
+
+    <div class="constellation-container">
+        <!-- Status Indicator -->
+        <div class="status-indicator">
+            <div class="status-dot" id="statusDot"></div>
+            <span id="statusText">Online</span>
+        </div>
+
+        <!-- Clear Chat Button -->
+        <button class="clear-chat" onclick="clearConstellation()">
+            <i class="fas fa-broom"></i> Clear Chat
+        </button>
+
+        <!-- Interactive Prompt Star -->
+        <div class="prompt-star" id="promptStar"></div>
+        
+        <!-- Hint Text -->
+        <div class="star-hint" id="starHint">Hover for prompts ✨</div>
+
+        <!-- Central Hub -->
+        <div class="central-hub">
+            <div class="hub-avatar">
+                <i class="fas fa-robot"></i>
+            </div>
+            <div class="hub-title">Portfolio Assistant</div>
+            <div class="hub-subtitle">Explore my skills & experience through conversation</div>
+        </div>
+
+        <!-- Suggestions Panel -->
+        <div class="suggestions-panel" id="suggestionsPanel">
+            <div class="suggestions-header">
+                <i class="fas fa-lightbulb"></i>
+                <span>Try asking about:</span>
+            </div>
+            <div class="suggestions-grid" id="suggestionsGrid">
+                <!-- Suggestions will be populated by JavaScript -->
+            </div>
+        </div>
+
+        <!-- Typing Indicator -->
+        <div class="typing-constellation" id="typingIndicator">
+            <div class="message-avatar bot-avatar">
+                <i class="fas fa-robot"></i>
+            </div>
+            <div class="typing-dots">
+                <div class="typing-dot"></div>
+                <div class="typing-dot"></div>
+                <div class="typing-dot"></div>
+            </div>
+        </div>
+
+        <!-- Input Area -->
+        <div class="input-constellation">
+            <input type="text" class="message-input" id="messageInput" placeholder="Ask me about my portfolio, skills, or projects..." autocomplete="off">
+            <button class="send-constellation" id="sendButton">
+                <i class="fas fa-paper-plane"></i>
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Global variables
+        let messageCount = 0;
+        let isConnected = true;
+        let occupiedPositions = [];
+        let messageConnections = []; // Store connections between user and bot messages
+        const minDistance = 160; // Reduced for better space utilization
+        let suggestionsVisible = false;
+        let hintTimeout;
+
+        // Suggested prompts for users
+        const suggestedPrompts = [
+            "Tell me about your technical skills",
+            "What projects have you worked on?",
+            "Describe your work experience",
+            "What programming languages do you know?",
+            "Show me your latest achievements",
+            "What's your educational background?",
+            "Tell me about your problem-solving approach",
+            "What technologies are you passionate about?",
+            "What's your development philosophy?",
+            "Tell me about your recent certifications",
+            "What frameworks do you specialize in?",
+            "Describe your team collaboration style"
+        ];
+
+        // Enhanced background creation
+        function createStars() {
+            const starsContainer = document.getElementById('stars');
+            for (let i = 0; i < 150; i++) {
+                const star = document.createElement('div');
+                const size = Math.random();
+                
+                if (size < 0.6) {
+                    star.className = 'star small';
+                } else if (size < 0.9) {
+                    star.className = 'star medium';
+                } else {
+                    star.className = 'star large';
+                }
+                
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.animationDelay = Math.random() * 4 + 's';
+                starsContainer.appendChild(star);
+            }
+        }
+
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            for (let i = 0; i < 20; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 15 + 's';
+                particle.style.animationDuration = (10 + Math.random() * 10) + 's';
+                particlesContainer.appendChild(particle);
+            }
+        }
+
+        // Completely rewritten positioning algorithm to prevent overlaps and use middle space
+        function findValidPosition(cardWidth = 280, cardHeight = 140, isFirstMessage = false) {
+            const centerX = window.innerWidth / 2;
+            const centerY = window.innerHeight / 2;
+            const hubRadius = 140; // Central hub exclusion zone
+
+            // For the first message, place it in a good visible spot
+            if (isFirstMessage) {
+                const position = {
+                    x: Math.max(50, centerX - 350),
+                    y: Math.max(100, centerY - 70)
+                };
+
+                occupiedPositions.push({
+                    x: position.x,
+                    y: position.y,
+                    width: cardWidth,
+                    height: cardHeight,
+                    id: Date.now().toString()
+                });
+
+                return position;
+            }
+
+            // Create a grid-based approach with multiple zones
+            const zones = [
+                // Zone 1: Around the hub (but not too close)
+                { startRadius: hubRadius + 50, endRadius: hubRadius + 200, priority: 1 },
+                // Zone 2: Middle area
+                { startRadius: hubRadius + 200, endRadius: hubRadius + 350, priority: 2 },
+                // Zone 3: Outer area
+                { startRadius: hubRadius + 350, endRadius: hubRadius + 500, priority: 3 }
+            ];
+
+            // Try each zone in priority order
+            for (const zone of zones) {
+                const positions = generateZonePositions(centerX, centerY, zone.startRadius, zone.endRadius, cardWidth, cardHeight);
+                
+                for (const pos of positions) {
+                    if (isPositionValid(pos.x, pos.y, cardWidth, cardHeight)) {
+                        occupiedPositions.push({
+                            x: pos.x,
+                            y: pos.y,
+                            width: cardWidth,
+                            height: cardHeight,
+                            id: Date.now().toString()
+                        });
+                        return { x: pos.x, y: pos.y };
+                    }
+                }
+            }
+
+            // Fallback: systematic grid placement
+            return getGridFallbackPosition(cardWidth, cardHeight);
+        }
+
+        function generateZonePositions(centerX, centerY, startRadius, endRadius, cardWidth, cardHeight) {
+            const positions = [];
+            const radiusStep = 80;
+            const angleSteps = [8, 12, 16, 20]; // More positions as radius increases
+
+            for (let radius = startRadius; radius <= endRadius; radius += radiusStep) {
+                const stepIndex = Math.floor((radius - startRadius) / radiusStep);
+                const angleCount = angleSteps[Math.min(stepIndex, angleSteps.length - 1)];
+                const angleStep = (Math.PI * 2) / angleCount;
+
+                for (let i = 0; i < angleCount; i++) {
+                    const angle = i * angleStep + (stepIndex * 0.3); // Offset each ring
+                    const x = centerX + Math.cos(angle) * radius;
+                    const y = centerY + Math.sin(angle) * (radius * 0.7); // Flatten vertically
+
+                    // Ensure within viewport bounds
+                    const safeX = Math.max(20, Math.min(x, window.innerWidth - cardWidth - 20));
+                    const safeY = Math.max(80, Math.min(y, window.innerHeight - cardHeight - 120));
+
+                    positions.push({ x: safeX, y: safeY });
+                }
+            }
+
+            return positions;
+        }
+
+        function isPositionValid(x, y, width, height) {
+            const centerX = x + width / 2;
+            const centerY = y + height / 2;
+
+            // Check against all occupied positions
+            for (const pos of occupiedPositions) {
+                const posCenterX = pos.x + pos.width / 2;
+                const posCenterY = pos.y + pos.height / 2;
+                
+                const distance = Math.sqrt(
+                    Math.pow(centerX - posCenterX, 2) + 
+                    Math.pow(centerY - posCenterY, 2)
+                );
+
+                if (distance < minDistance) {
+                    return false;
+                }
+            }
+
+            // Check if too close to central hub
+            const hubCenterX = window.innerWidth / 2;
+            const hubCenterY = window.innerHeight / 2;
+            const hubDistance = Math.sqrt(
+                Math.pow(centerX - hubCenterX, 2) + 
+                Math.pow(centerY - hubCenterY, 2)
+            );
+
+            if (hubDistance < 180) {
+                return false;
+            }
+
+            return true;
+        }
+
+        function getGridFallbackPosition(cardWidth, cardHeight) {
+            const margin = 50;
+            const cols = Math.floor((window.innerWidth - margin * 2) / (cardWidth + 30));
+            const rows = Math.floor((window.innerHeight - 200) / (cardHeight + 30));
+            
+            for (let row = 0; row < rows; row++) {
+                for (let col = 0; col < cols; col++) {
+                    const x = margin + col * (cardWidth + 30);
+                    const y = 100 + row * (cardHeight + 30);
+                    
+                    if (isPositionValid(x, y, cardWidth, cardHeight)) {
+                        occupiedPositions.push({
+                            x: x,
+                            y: y,
+                            width: cardWidth,
+                            height: cardHeight,
+                            id: Date.now().toString()
+                        });
+                        return { x: x, y: y };
+                    }
+                }
+            }
+
+            // Last resort: random position
+            const x = Math.random() * (window.innerWidth - cardWidth - 40) + 20;
+            const y = Math.random() * (window.innerHeight - cardHeight - 160) + 80;
+            
+            occupiedPositions.push({
+                x: x,
+                y: y,
+                width: cardWidth,
+                height: cardHeight,
+                id: Date.now().toString()
+            });
+            
+            return { x: x, y: y };
+        }
+
+        function createConnectionLine(userCard, botCard) {
+            const line = document.createElement('div');
+            line.className = 'connection-line';
+            
+            const userRect = userCard.getBoundingClientRect();
+            const botRect = botCard.getBoundingClientRect();
+            
+            const userCenterX = userRect.left + userRect.width / 2;
+            const userCenterY = userRect.top + userRect.height / 2;
+            const botCenterX = botRect.left + botRect.width / 2;
+            const botCenterY = botRect.top + botRect.height / 2;
+            
+            const distance = Math.sqrt(
+                Math.pow(botCenterX - userCenterX, 2) + 
+                Math.pow(botCenterY - userCenterY, 2)
+            );
+            
+            const angle = Math.atan2(botCenterY - userCenterY, botCenterX - userCenterX);
+            
+            line.style.width = distance + 'px';
+            line.style.left = userCenterX + 'px';
+            line.style.top = userCenterY + 'px';
+            line.style.transform = `rotate(${angle}rad)`;
+            line.style.transformOrigin = '0 50%';
+            
+            document.querySelector('.constellation-container').appendChild(line);
+            
+            // Add connected class to both cards
+            userCard.classList.add('connected');
+            botCard.classList.add('connected');
+            
+            return line;
+        }
+
+        function getCurrentTime() {
+            return new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        }
+
+        function createMessageCard(text, isUser = false, connectToPrevious = false) {
+            const card = document.createElement('div');
+            card.className = `message-card ${isUser ? 'user-card' : 'bot-card'}`;
+            card.dataset.messageId = Date.now().toString();
+            
+            const position = findValidPosition(280, 140, messageCount === 0 && !isUser);
+            card.style.left = position.x + 'px';
+            card.style.top = position.y + 'px';
+            
+            card.innerHTML = `
+                <div class="message-header">
+                    <div class="message-avatar ${isUser ? 'user-avatar' : 'bot-avatar'}">
+                        <i class="fas fa-${isUser ? 'user' : 'robot'}"></i>
+                    </div>
+                    <span style="font-weight: 600;">${isUser ? 'You' : 'Assistant'}</span>
+                </div>
+                <div class="message-text">${text}</div>
+                <div class="message-time">${getCurrentTime()}</div>
+            `;
+            
+            document.querySelector('.constellation-container').appendChild(card);
+            messageCount++;
+            
+            // Create connection line if this is a bot response to a user message
+            if (!isUser && connectToPrevious) {
+                const allCards = document.querySelectorAll('.message-card');
+                const userCard = allCards[allCards.length - 2]; // Previous card should be user card
+                
+                if (userCard && userCard.classList.contains('user-card')) {
+                    setTimeout(() => {
+                        const line = createConnectionLine(userCard, card);
+                        messageConnections.push({
+                            userCard: userCard,
+                            botCard: card,
+                            line: line
+                        });
+                    }, 500); // Delay to ensure cards are positioned
+                }
+            }
+            
+            // Enhanced click interaction
+            card.addEventListener('click', () => {
+                card.style.zIndex = '1000';
+                card.style.transform = 'scale(1.08) translateY(-5px)';
+                setTimeout(() => {
+                    card.style.zIndex = '50';
+                    card.style.transform = '';
+                }, 2000);
+            });
+            
+            return card;
+        }
+
+        function createImageCard(imageUrl, connectToPrevious = false) {
+            const card = document.createElement('div');
+            card.className = 'image-card';
+            card.dataset.messageId = Date.now().toString();
+            
+            const position = findValidPosition(320, 200);
+            card.style.left = position.x + 'px';
+            card.style.top = position.y + 'px';
+            
+            card.innerHTML = `
+                <div class="message-header">
+                    <div class="message-avatar bot-avatar">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <span style="font-weight: 600; color: white;">Assistant</span>
+                </div>
+                <img src="${imageUrl}" alt="Shared Image" class="constellation-image" onclick="openImageModal('${imageUrl}')" loading="lazy">
+                <div class="message-time" style="color: rgba(255,255,255,0.7);">${getCurrentTime()}</div>
+            `;
+            
+            document.querySelector('.constellation-container').appendChild(card);
+            messageCount++;
+            
+            // Create connection line if this is a bot response to a user message
+            if (connectToPrevious) {
+                const allCards = document.querySelectorAll('.message-card, .image-card');
+                const userCard = allCards[allCards.length - 2]; // Previous card should be user card
+                
+                if (userCard && userCard.classList.contains('user-card')) {
+                    setTimeout(() => {
+                        const line = createConnectionLine(userCard, card);
+                        messageConnections.push({
+                            userCard: userCard,
+                            botCard: card,
+                            line: line
+                        });
+                    }, 500);
+                }
+            }
+            
+            return card;
+        }
+
+        function showTypingIndicator() {
+            const indicator = document.getElementById('typingIndicator');
+            indicator.style.display = 'flex';
+        }
+
+        function hideTypingIndicator() {
+            document.getElementById('typingIndicator').style.display = 'none';
+        }
+
+        function updateConnectionStatus(connected) {
+            const statusDot = document.getElementById('statusDot');
+            const statusText = document.getElementById('statusText');
+            
+            if (connected) {
+                statusDot.className = 'status-dot';
+                statusText.textContent = 'Online';
+            } else {
+                statusDot.className = 'status-dot offline';
+                statusText.textContent = 'Offline';
+            }
+            isConnected = connected;
+        }
+
+        function showSuggestions() {
+            const panel = document.getElementById('suggestionsPanel');
+            panel.classList.add('show');
+            suggestionsVisible = true;
+        }
+
+        function hideSuggestions() {
+            const panel = document.getElementById('suggestionsPanel');
+            panel.classList.remove('show');
+            suggestionsVisible = false;
+        }
+
+        function createSuggestions() {
+            const grid = document.getElementById('suggestionsGrid');
+            suggestedPrompts.forEach(prompt => {
+                const button = document.createElement('button');
+                button.className = 'suggestion-card';
+                button.textContent = prompt;
+                button.onclick = () => handleSuggestionClick(prompt);
+                grid.appendChild(button);
+            });
+        }
+
+        function handleSuggestionClick(suggestion) {
+            const input = document.getElementById('messageInput');
+            input.value = suggestion;
+            hideSuggestions();
+            input.focus();
+        }
+
+        function setupPromptStar() {
+            const promptStar = document.getElementById('promptStar');
+            const starHint = document.getElementById('starHint');
+
+            // Desktop hover events
+            promptStar.addEventListener('mouseenter', () => {
+                showSuggestions();
+                clearTimeout(hintTimeout);
+                starHint.style.display = 'none';
+            });
+
+            promptStar.addEventListener('mouseleave', () => {
+                setTimeout(() => {
+                    if (!document.querySelector('.suggestions-panel:hover')) {
+                        hideSuggestions();
+                    }
+                }, 300);
+            });
+
+            // Mobile touch events
+            promptStar.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                if (suggestionsVisible) {
+                    hideSuggestions();
+                } else {
+                    showSuggestions();
+                }
+                clearTimeout(hintTimeout);
+                starHint.style.display = 'none';
+            });
+
+            // Keep suggestions open when hovering over the panel
+            const suggestionsPanel = document.getElementById('suggestionsPanel');
+            suggestionsPanel.addEventListener('mouseenter', () => {
+                showSuggestions();
+            });
+
+            suggestionsPanel.addEventListener('mouseleave', () => {
+                hideSuggestions();
+            });
+
+            // Hide hint after some time
+            hintTimeout = setTimeout(() => {
+                starHint.style.display = 'none';
+            }, 10000);
+        }
+
+        async function sendMessage() {
+            const input = document.getElementById('messageInput');
+            const sendButton = document.getElementById('sendButton');
+            const text = input.value.trim();
+            
+            if (!text) return;
+            
+            // Disable input
+            input.disabled = true;
+            sendButton.disabled = true;
+            
+            // Hide suggestions
+            hideSuggestions();
+            
+            // Create user message
+            createMessageCard(text, true);
+            input.value = '';
+            
+            // Show typing indicator
+            showTypingIndicator();
+            
+            try {
+                const response = await fetch("http://localhost:5005/webhooks/rest", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ sender: "user", message: text }),
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                updateConnectionStatus(true);
+                
+                setTimeout(() => {
+                    hideTypingIndicator();
+                    
+                    if (data && data.length > 0) {
+                        data.forEach((resp, index) => {
+                            setTimeout(() => {
+                                if (resp.text) {
+                                    createMessageCard(resp.text, false, true);
+                                }
+                                if (resp.image) {
+                                    createImageCard(resp.image, true);
+                                }
+                            }, index * 1000);
+                        });
+                    } else {
+                        createMessageCard("I'm not sure how to respond to that. Could you try rephrasing your question?", false, true);
+                    }
+                }, 1500);
+                
+            } catch (error) {
+                hideTypingIndicator();
+                updateConnectionStatus(false);
+                createMessageCard("🔌 Connection error: Unable to reach the portfolio assistant. Please check if the server is running.", false, true);
+                console.error("Error:", error);
+            } finally {
+                // Re-enable input
+                input.disabled = false;
+                sendButton.disabled = false;
+                input.focus();
+            }
+        }
+
+        function clearConstellation() {
+            const cards = document.querySelectorAll('.message-card, .image-card');
+            const lines = document.querySelectorAll('.connection-line');
+            
+            // Remove connection lines first
+            lines.forEach((line, index) => {
+                setTimeout(() => {
+                    line.style.opacity = '0';
+                    setTimeout(() => line.remove(), 300);
+                }, index * 100);
+            });
+            
+            // Remove cards
+            cards.forEach((card, index) => {
+                setTimeout(() => {
+                    card.style.animation = 'float-in 0.8s ease-out reverse';
+                    setTimeout(() => card.remove(), 800);
+                }, index * 150);
+            });
+            
+            messageCount = 0;
+            occupiedPositions = [];
+            messageConnections = [];
+            
+            // Show hint again
+            const starHint = document.getElementById('starHint');
+            starHint.style.display = 'block';
+            hintTimeout = setTimeout(() => {
+                starHint.style.display = 'none';
+            }, 10000);
+        }
+
+        function openImageModal(imageSrc) {
+            let modal = document.getElementById('imageModal');
+            if (!modal) {
+                modal = document.createElement('div');
+                modal.id = 'imageModal';
+                modal.style.cssText = `
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    background: rgba(0,0,0,0.95);
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    z-index: 10000;
+                    cursor: pointer;
+                    backdrop-filter: blur(10px);
+                `;
+                modal.innerHTML = `<img src="${imageSrc}" style="max-width: 90%; max-height: 90%; border-radius: 15px; box-shadow: 0 20px 60px rgba(0,0,0,0.5);">`;
+                modal.onclick = () => modal.remove();
+                document.body.appendChild(modal);
+            }
+        }
+
+        // Event listeners
+        document.getElementById('sendButton').addEventListener('click', sendMessage);
+        document.getElementById('messageInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+
+        // Hide suggestions when clicking outside
+        document.addEventListener('click', (e) => {
+            const suggestionsPanel = document.getElementById('suggestionsPanel');
+            const promptStar = document.getElementById('promptStar');
+            
+            if (!suggestionsPanel.contains(e.target) && !promptStar.contains(e.target)) {
+                hideSuggestions();
+            }
+        });
+
+        // Initialize
+        window.addEventListener('load', () => {
+            createStars();
+            createParticles();
+            createSuggestions();
+            setupPromptStar();
+            document.getElementById('messageInput').focus();
+            
+            // Welcome message
+            setTimeout(() => {
+                createMessageCard("Welcome to my portfolio constellation! ✨ I'm here to help you explore my skills, experience, and projects. Hover over the glowing star for suggested questions!", false);
+            }, 1500);
+        });
+
+        // Handle window resize
+        window.addEventListener('resize', () => {
+            // Clear position tracking and recalculate
+            occupiedPositions = [];
+            const cards = document.querySelectorAll('.message-card, .image-card');
+            
+            // Remove existing connection lines
+            document.querySelectorAll('.connection-line').forEach(line => line.remove());
+            
+            // Reposition cards
+            cards.forEach((card, index) => {
+                const isImageCard = card.classList.contains('image-card');
+                const isFirstMessage = index === 0 && !card.classList.contains('user-card');
+                
+                const position = findValidPosition(
+                    isImageCard ? 320 : 280,
+                    isImageCard ? 200 : 140,
+                    isFirstMessage
+                );
+                
+                card.style.left = position.x + 'px';
+                card.style.top = position.y + 'px';
+                card.classList.remove('connected');
+            });
+            
+            // Recreate connection lines
+            messageConnections = [];
+            setTimeout(() => {
+                const allCards = Array.from(document.querySelectorAll('.message-card, .image-card'));
+                for (let i = 0; i < allCards.length - 1; i++) {
+                    const currentCard = allCards[i];
+                    const nextCard = allCards[i + 1];
+                    
+                    if (currentCard.classList.contains('user-card') && 
+                        (nextCard.classList.contains('bot-card') || nextCard.classList.contains('image-card'))) {
+                        const line = createConnectionLine(currentCard, nextCard);
+                        messageConnections.push({
+                            userCard: currentCard,
+                            botCard: nextCard,
+                            line: line
+                        });
+                    }
+                }
+            }, 500);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,32 @@
+# The config recipe.
+# https://rasa.com/docs/rasa/model-configuration/
+
+# The assistant project unique identifier
+assistant_id: 20250701-131256-little-sherry
+
+language: en
+version: "3.1"
+
+pipeline:
+  - name: WhitespaceTokenizer
+  - name: RegexFeaturizer
+  - name: LexicalSyntacticFeaturizer
+  - name: CountVectorsFeaturizer
+  - name: DIETClassifier
+  - name: EntitySynonymMapper
+  - name: ResponseSelector
+    retrieval_intent: faq
+    scale_loss: false
+  - name: FallbackClassifier
+    threshold: 0.3
+    ambiguity_threshold: 0.1
+
+
+
+policies:
+  - name: MemoizationPolicy
+    ore_fallback_action_name: "action_default_fallback"
+    core_fallback_threshold: 0.3
+    enable_fallback_prediction: true
+  - name: RulePolicy
+  - name: TEDPolicy

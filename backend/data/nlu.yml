@@ -1,0 +1,111 @@
+version: "3.1"
+
+nlu:
+- intent: greet
+  examples: |
+    - hey
+    - hello
+    - hi
+    - hello there
+    - good morning
+    - good evening
+    - moin
+    - hey there
+    - let's go
+    - hey dude
+    - goodmorning
+    - goodevening
+    - good afternoon
+
+- intent: goodbye
+  examples: |
+    - cu
+    - good by
+    - cee you later
+    - good night
+    - bye
+    - goodbye
+    - have a nice day
+    - see you around
+    - bye bye
+    - see you later
+
+- intent: ask_name
+  examples: |
+    - What is your name?
+    - who are you?
+    - tell me your name
+    - whats your name?
+    - Introduce yourself
+    
+
+- intent: ask_projects
+  examples: |
+    - tell me about your projects
+    - what projects have you done?
+    - describe your work
+    - describe your projects
+    - projects
+
+- intent: ask_leadership_experience 
+  examples: |
+    - tell me about your leadership experince?
+    - tell me about your extra-curricular activites
+    - tell me about your past experince as a leadership
+    - past experince
+
+   
+    
+
+- intent: ask_skills
+  examples: |
+    - what are your skills
+    - what tech do you know?
+    - what technologies do you know?
+    - list your technicsal skills
+    - tell me about your skills
+    - skills
+    
+
+- intent: ask_education
+  examples: |
+    - tell me about your education
+    - what is our educational background
+    - education
+    - where did you study?
+   
+
+- intent: ask_cgpa
+  examples: |
+    - What is your CGPA?
+    - How much is your GPA?
+    - tell me your score
+    - what is your pointer?
+    - CGPA?
+    - your pointer?
+
+
+- intent: ask_contact
+  examples: |
+    - How can i contact you?
+    - give me your contact
+    - share your email
+
+- intent: ask_resume
+  examples: |
+    - How can i contact you?
+    - give me your contact
+    - share your email
+  
+
+
+- intent: Order_pizza
+  examples: |
+    - I want to order a [pizza](food)
+    - can i get a [pizza](food)
+    - i'd like to have a [pizza](food)
+    - How about a [pizza](food)
+
+
+
+

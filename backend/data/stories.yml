@@ -1,0 +1,55 @@
+version: "3.1"
+
+stories:
+
+- story: greeting path
+  steps:
+  - intent: greet
+  - action: utter_greet
+
+
+- story: name info 
+  steps:
+  - intent: ask_name
+  - action: utter_ask_name
+
+- story: project info 
+  steps:
+  - intent: ask_projects
+  - action: utter_ask_projects
+
+- story: skill info 
+  steps:
+  - intent: ask_skills
+  - action: utter_ask_skills
+
+- story: education info 
+  steps:
+  - intent: ask_education
+  - action: utter_ask_education
+
+- story: cgpa info 
+  steps:
+  - intent: ask_cgpa
+  - action: utter_ask_cgpa
+
+- story: contact info
+  steps:
+  - intent: ask_contact
+  - action: utter_ask_contact
+
+- story: resume download
+  steps:
+  - intent: ask_resume
+  - action: utter_resume_download
+
+  
+
+
+
+- story: Order pizza
+  steps:
+  - intent: Order_pizza
+  - action: action_extract_food_entity
+     
+ 

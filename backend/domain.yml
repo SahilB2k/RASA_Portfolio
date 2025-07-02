@@ -1,0 +1,104 @@
+version: "3.1"
+
+intents:
+  - greet
+  - goodbye
+  - ask_name
+  - ask_projects
+  - ask_skills
+  - ask_education
+  - ask_cgpa
+  - ask_contact
+  - Order_pizza
+  - ask_leadership_experience
+  - ask_resume
+  - download_resume
+
+entities:
+  - food
+
+responses:
+
+  utter_greet:
+    - text: "Hello! I'm Sahil Jadhav's virtual assistant. How can I help you today?"
+
+  utter_goodbye:
+    - text: "Bye"
+
+  utter_thanks:
+    - text: "You're welcome, it was a pleasure to assist you."
+
+  utter_ask_name:
+    - text: |
+        I am a fourth year Artificial Intelligence and Data Science engineering student with hands-on experience in
+        machine learning, web development, and AI-powered applications. Passionate about solving real-world problems
+        through technology, I have built multiple projects using Django, React, TensorFlow, and NLP tools. As the President
+        of SHAIDS, I actively lead workshops and seminars, combining technical expertise with strong leadership and
+        communication skills. I’m always eager to learn, collaborate, and innovate.
+
+  utter_ask_projects:
+    - custom:
+        type: "project_list"
+        projects:
+          - title: "Image Forgery Detection using Deep Learning"
+            description: "A model to detect forged images using Convolutional Neural Networks and image processing techniques."
+            image: "https://raw.githubusercontent.com/SahilB2k/ImageForgery/main/images/home.png"
+            github: "https://github.com/SahilB2k/ImageForgery"
+          - title: "Like-a-10: Smart Explainer Bot"
+            description: "An AI-powered chatbot that explains technical topics simply like you're 10 years old."
+            image: "https://raw.githubusercontent.com/SahilB2k/ImageForgery/main/images/home.png"
+            github: "https://github.com/Like-a-10/Like-a-10"
+
+  utter_ask_skills:
+    - text: "My technical skills include:\n\nWeb Development & Backend: HTML, CSS, JavaScript, React.js, Django, Flask, Node.js, Socket.IO \n\nMachine Learning & AI: TensorFlow, scikit-learn, NumPy, Pandas, Matplotlib, Seaborn\n\nNLP & Conversational AI: spaCy, NLTK, Hugging Face Transformers, LangChain, Rasa, Dialogflow, Ollama\n\nDatabases & Tools: SQL, MongoDB, Git, GitHub, Google Colab, AWS (Basics)"
+        
+
+  utter_ask_education:
+    - text: |
+        I am pursuing BE in Artificial Intelligence and Data Science from Datta Meghe College of Engineering, affiliated to Mumbai University.
+
+  utter_ask_cgpa:
+    - text: "My current CGPA is 8.2"
+
+  utter_ask_contact:
+    - custom:
+        type: "Contact_info"
+        details:
+          - title: "Mail"
+            description: "jadhavssahil@gmail.com"
+          - title: "Number"
+            description: "+91-8976285458"
+          - title: "LinkedIn"
+            link: "https://www.linkedin.com/in/sahil-jadhav-49b318289/"
+          - title: "Instagram"
+            link: "https://www.instagram.com/_.sahil4565_/?hl=en"
+
+  utter_default:
+    - text: "I'm not sure how to respond to that. Could you try rephrasing your question?"
+
+  utter_leadership_experience:
+    - text: |
+        **President – SHAIDS (Students Hive of Artificial Intelligence and Data Science)**  
+        *Datta Meghe College of Engineering*  
+        **2024**
+
+        - Led the student team in organizing tech workshops and seminars on Python, Django, and web development.  
+        - Coordinated with faculty/industry mentors and managed event logistics.  
+        - Mentored juniors and promoted a collaborative learning environment.
+
+  utter_resume_download:
+    - custom:
+        text: "You can download my resume below:"
+        buttons:
+          - title: "📄 Download Resume"
+            payload: "/download_resume"
+
+  utter_download_resume:
+    - text: "Here is my [Resume PDF](https://example.com/Sahil_Resume.pdf)"  # Replace with your actual resume link
+
+actions:
+  - action_extract_food_entity
+
+session_config:
+  session_expiration_time: 60
+  carry_over_slots_to_new_session: true

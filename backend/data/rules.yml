@@ -1,0 +1,54 @@
+version: "3.1"
+
+rules:
+
+- rule: Say hello
+  steps:
+    - intent: greet
+    - action: utter_greet
+
+- rule: Say goodbye
+  steps:
+    - intent: goodbye
+    - action: utter_goodbye
+
+- rule: Respond to name inquiry
+  steps:
+    - intent: ask_name
+    - action: utter_ask_name
+
+- rule: Respond to project inquiry
+  steps:
+    - intent: ask_projects
+    - action: utter_ask_projects
+
+- rule: Respond to skills inquiry
+  steps:
+    - intent: ask_skills
+    - action: utter_ask_skills
+
+- rule: Respond to resume inquiry
+  steps:
+    - intent: download_resume
+    - action: utter_download_resume
+
+
+- rule: Respond to education inquiry
+  steps:
+    - intent: ask_education
+    - action: utter_ask_education
+
+- rule: Respond to CGPA inquiry
+  steps:
+    - intent: ask_cgpa
+    - action: utter_ask_cgpa
+
+- rule: Respond to contact inquiry
+  steps:
+    - intent: ask_contact
+    - action: utter_ask_contact
+
+- rule: Fallback when no intent is recognized
+  steps:
+    - intent: nlu_fallback
+    - action: utter_default
