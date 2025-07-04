@@ -1,2 +1,4 @@
 #!/bin/bash
-rasa run --enable-api --cors "*" --port $PORT
+#!/bin/bash
+
+rasa run --enable-api --cors "*" --debug --port 5005
