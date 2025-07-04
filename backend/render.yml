@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: rasa-chatbot
+    env: python
+    branch: main
+    buildCommand: pip install -r requirements.txt
+    startCommand: ./start.sh
+    envVars:
+      - key: PORT
+        value: 10000
