@@ -4,4 +4,3 @@ numpy
 
 python
 
-Python 3.10.9
