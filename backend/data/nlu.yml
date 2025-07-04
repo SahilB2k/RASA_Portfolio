@@ -96,6 +96,20 @@ nlu:
     - How can i contact you?
     - give me your contact
     - share your email
+
+- intent: download_resume
+  examples: |
+    - give me your resume?
+    - your resume?
+    - share your resume
+
+- intent: help
+  examples: |
+    - help
+    - what are the prompts?
+    - show me all prompts
+    - what should i type
+    
   
 
 

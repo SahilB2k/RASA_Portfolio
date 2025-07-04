@@ -13,6 +13,7 @@ intents:
   - ask_leadership_experience
   - ask_resume
   - download_resume
+  - help
 
 entities:
   - food
@@ -48,6 +49,10 @@ responses:
             description: "An AI-powered chatbot that explains technical topics simply like you're 10 years old."
             image: "https://raw.githubusercontent.com/SahilB2k/ImageForgery/main/images/home.png"
             github: "https://github.com/Like-a-10/Like-a-10"
+          - title: "ChatConnect"
+            description: "A simple real-time chat application built with React ,SocketIO , Firebase, primarily for learning purposes. UI generated using AI tools."
+            image: "https://github.com/SahilB2k/ChatApp/blob/main/images/login.jpg?raw=true"
+            github: "https://github.com/SahilB2k/ChatApp"
 
   utter_ask_skills:
     - text: "My technical skills include:\n\nWeb Development & Backend: HTML, CSS, JavaScript, React.js, Django, Flask, Node.js, Socket.IO \n\nMachine Learning & AI: TensorFlow, scikit-learn, NumPy, Pandas, Matplotlib, Seaborn\n\nNLP & Conversational AI: spaCy, NLTK, Hugging Face Transformers, LangChain, Rasa, Dialogflow, Ollama\n\nDatabases & Tools: SQL, MongoDB, Git, GitHub, Google Colab, AWS (Basics)"
@@ -94,7 +99,18 @@ responses:
             payload: "/download_resume"
 
   utter_download_resume:
-    - text: "Here is my [Resume PDF](https://example.com/Sahil_Resume.pdf)"  # Replace with your actual resume link
+    - text: "Here is my resume: https://drive.google.com/file/d/1S2poJoTZnYXBaweG1ZG5FjeLamBBHshu/view?usp=sharing"  # Replace with your actual resume link
+
+  utter_ask_help:
+    - text: "1)Introduce yourself\n
+            2)what projects have you done?\n
+            3)tell me about your extra-curricular activites\n
+            4)what technologies do you know?\n
+            5)what is our educational background\n
+            6)How much is your GPA?\n
+            7)How can i contact you?\n
+            8)share your resume\n
+            9)show me all prompts"
 
 actions:
   - action_extract_food_entity

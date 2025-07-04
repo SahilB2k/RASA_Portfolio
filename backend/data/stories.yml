@@ -43,6 +43,11 @@ stories:
   - intent: ask_resume
   - action: utter_resume_download
 
+- story: ask help
+  steps:
+  - intent: help
+  - action: utter_ask_help
+
   
 
 
