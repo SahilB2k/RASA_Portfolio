@@ -11,4 +11,16 @@ services:
     autoDeploy: true
     region: oregon
     branch: main
-    repo: https://github.com/SahilB2k/RASA_Portfolio
+
+  - type: web
+    name: react-frontend
+    env: static
+    plan: free
+    buildCommand: |
+      cd frontend
+      npm install
+      npm run build
+    staticPublishPath: frontend/build
+    autoDeploy: true
+    region: oregon
+    branch: main
