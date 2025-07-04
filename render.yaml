@@ -1,12 +1,11 @@
 services:
   - type: web
     name: rasa-backend
-    env: python
+    env: docker
     plan: free
-    buildCommand: |
-      pip install -r requirement.txt
-    startCommand: |
-      bash start.sh
-    envVars:
-      - key: PORT
-        value: 5005
+    repo: https://github.com/SahilB2k/RASA_Portfolio
+    branch: main
+    dockerContext: ./backend
+    dockerfilePath: ./backend/Dockerfile
+    autoDeploy: true
+
